@@ -66,6 +66,7 @@ CORO_MTL = 0x448931dd70be6506  # CoronaMtl
 ARCH_MTL = 0x4A16365470B05735  # ArchMtl
 VRAY_MTL = 0x7034695C37BF3F2F  # VRayMtl
 DUMMY = 0x0000000000876234  # Dummy
+POINT = 0x0000000000002013 # Point
 
 SKIPPABLE = {
     0x0000000000001002: 'Camera',
@@ -76,7 +77,6 @@ SKIPPABLE = {
     0x0000000000001065: 'Rectangle',
     0x0000000000001097: 'Ellipse',
     0x0000000000001999: 'Circle',
-    0x0000000000002013: 'Point',
     0x05622B0D69011E82: 'Compass',
     0x12A822FB76A11646: 'CV Surface',
     0x1EB3430074F93B07: 'Particle View',
@@ -875,21 +875,21 @@ def get_metadata(index):
 
 def get_guid(chunk):
     clid = get_class(chunk)
-    if (clid and clid.get_first(0x2060)):
+    if (clid):
         return clid.get_first(0x2060).data[1]
     return chunk.types
 
 
 def get_super_id(chunk):
     clid = get_class(chunk)
-    if (clid and clid.get_first(0x2060)):
+    if (clid):
         return clid.get_first(0x2060).data[2]
     return None
 
 
 def get_cls_name(chunk):
     clid = get_class(chunk)
-    if (clid and clid.get_first(0x2042)):
+    if (clid):
         cls_name = clid.get_first(0x2042).data
         try:
             return "'%s'" % (cls_name)
@@ -1618,6 +1618,8 @@ def create_mesh(context, settings, node, msh, mat):
     elif (uid in {0x2032, 0x2033}):
         created = create_shell(context, settings, node, msh, mat)
     elif (uid == DUMMY and 'EMPTY' in settings[1]):
+        created = [create_dummy_object(context, node, uid)]
+    elif (uid == POINT):
         created = [create_dummy_object(context, node, uid)]
     elif (uid == BIPED_OBJ and 'ARMATURE' in settings[1]):
         created = [create_dummy_object(context, node, uid)]
