@@ -889,7 +889,7 @@ def get_super_id(chunk):
 
 def get_cls_name(chunk):
     clid = get_class(chunk)
-    if (clid and clid.get_first(0x2060)):
+    if (clid and clid.get_first(0x2042)):
         cls_name = clid.get_first(0x2042).data
         try:
             return "'%s'" % (cls_name)
